@@ -1,0 +1,31 @@
+SAMPLE TO-DO IMPORT FILE (For Excel Format)
+
+How to create an Excel file to import To-Dos:
+
+1. Create a new Excel file with the following columns:
+   - Title (Required)
+   - Description (Required)
+   - Priority (Optional: high, medium, low)
+   - Due Date (Optional: YYYY-MM-DD format)
+   - Status (Optional: pending, in-progress, completed)
+
+2. Example rows:
+   Title | Description | Priority | Due Date | Status
+   Complete Q4 Report | Finish quarterly reports | high | 2025-12-15 | pending
+   Review Proposal | Review new project proposal | high | 2025-12-12 | pending
+   Update Database | Add new clients to database | medium | 2025-12-18 | pending
+   Team Lunch | Plan end of year team lunch | low | 2025-12-10 | completed
+
+3. Save the file as .xlsx or .xls format
+
+4. Go to To-Do List page and click "📥 Import from Excel"
+
+5. Select your Excel file and click "Import To-Dos"
+
+Notes:
+- Title and Description are required for each to-do
+- If Priority is not specified, it defaults to "medium"
+- If Status is not specified, it defaults to "pending"
+- If Due Date is not specified, it defaults to today's date
+- Valid Priority values: high, medium, low
+- Valid Status values: pending, in-progress, completed

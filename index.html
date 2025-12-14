@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Portal - Complete Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="login-box">
+                <h1>Company Portal</h1>
+                <p class="subtitle">Complete Management System</p>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Password:</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Login</button>
+                    
+                    <p class="register-link">Don't have an account? <a href="#" onclick="toggleRegister()">Register here</a></p>
+                </form>
+
+                <form id="registerForm" style="display: none;">
+                    <h2>Register</h2>
+                    <div class="form-group">
+                        <label for="regName">Name:</label>
+                        <input type="text" id="regName" placeholder="Full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email:</label>
+                        <input type="email" id="regEmail" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Password:</label>
+                        <input type="password" id="regPassword" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regDepartment">Department:</label>
+                        <input type="text" id="regDepartment" placeholder="Department" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Register</button>
+                    <p><a href="#" onclick="toggleRegister()">Back to Login</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="page">
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>Company Portal</h2>
+            </div>
+            
+            <div class="user-info">
+                <div class="avatar">👤</div>
+                <div class="user-details">
+                    <p class="username" id="currentUserName">User</p>
+                    <p class="role" id="currentUserRole">Role</p>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active" data-page="dashboard">Dashboard</a></li>
+                <li><a href="#" class="nav-link" data-page="employees" id="employeeNav">Employees</a></li>
+                <li><a href="#" class="nav-link" data-page="finance">Finance & Salary</a></li>
+                <li><a href="#" class="nav-link" data-page="policies">Policies</a></li>
+                <li><a href="#" class="nav-link" data-page="tasks">Tasks</a></li>
+                <li><a href="#" class="nav-link" data-page="todolist">To-Do List</a></li>
+                <li><a href="#" class="nav-link" id="adminNav" data-page="admin" style="display: none;">Admin Panel</a></li>
+            </ul>
+            
+            <button id="logoutBtn" class="btn-logout">Logout</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" class="content-section active">
+                <header class="page-header">
+                    <h1>Dashboard</h1>
+                </header>
+
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <h3>Total Tasks</h3>
+                        <p class="stat-number" id="totalTasks">0</p>
+                        <p class="stat-subtitle">Tasks assigned</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Completed</h3>
+                        <p class="stat-number" id="completedTasks">0</p>
+                        <p class="stat-subtitle">Tasks done</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Task Progress</h3>
+                        <p class="stat-number" id="taskProgress">0%</p>
+                        <p class="stat-subtitle">Overall progress</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h3>Total Employees</h3>
+                        <p class="stat-number" id="totalEmployees">0</p>
+                        <p class="stat-subtitle">In organization</p>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>Task Progress</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="mainProgress" style="width: 0%;"></div>
+                        </div>
+                        <p id="progressText">0%</p>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Task Status Distribution</h3>
+                        <canvas id="taskChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Performance Metrics</h3>
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employees Page -->
+            <div id="employeesContent" class="content-section">
+                <header class="page-header">
+                    <h1>Employee Management</h1>
+                    <button class="btn-primary" onclick="openEmployeeModal()">+ Add Employee</button>
+                </header>
+
+                <div class="filters">
+                    <input type="text" id="employeeSearch" placeholder="Search employees..." class="search-input">
+                </div>
+
+                <div class="employees-list" id="employeesList">
+                    <!-- Employees will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Finance Page -->
+            <div id="financeContent" class="content-section">
+                <header class="page-header">
+                    <h1>Finance & Salary Management</h1>
+                </header>
+
+                <div class="salary-filters">
+                    <select id="employeeSelect" class="form-control">
+                        <option value="">Select Employee</option>
+                    </select>
+                    <input type="month" id="salaryMonth" class="form-control">
+                    <button class="btn-primary" onclick="calculateSalary()">Calculate Salary</button>
+                </div>
+
+                <div class="salary-info" id="salaryInfo" style="display: none;">
+                    <div class="salary-card">
+                        <h3>Salary Breakdown</h3>
+                        <div class="salary-detail">
+                            <span>Base Salary:</span>
+                            <span id="baseSalaryDisplay">0</span>
+                        </div>
+                        <div class="salary-detail">
+                            <span>Fixed Salary (70%):</span>
+                            <span id="fixedSalaryDisplay">0</span>
+                        </div>
+                        <div class="salary-detail">
+                            <span>Variable Salary (30%):</span>
+                            <span id="variableSalaryDisplay">0</span>
+                        </div>
+                        <div class="salary-detail total">
+                            <span>Total Salary:</span>
+                            <span id="totalSalaryDisplay">0</span>
+                        </div>
+                        <button class="btn-secondary" onclick="downloadSalarySlip()">Download Salary Slip</button>
+                    </div>
+
+                    <div class="performance-card">
+                        <h3>Performance Metrics</h3>
+                        <div class="performance-detail">
+                            <span>Team Performance:</span>
+                            <span id="teamPerfDisplay">0%</span>
+                        </div>
+                        <div class="performance-detail">
+                            <span>Individual Performance:</span>
+                            <span id="indPerfDisplay">0%</span>
+                        </div>
+                        <div class="performance-detail">
+                            <span>Company Performance:</span>
+                            <span id="compPerfDisplay">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="salary-history">
+                    <h3>Salary History</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Base</th>
+                                <th>Fixed</th>
+                                <th>Variable</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salaryHistoryTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Policies Page -->
+            <div id="policiesContent" class="content-section">
+                <header class="page-header">
+                    <h1>Company Policies</h1>
+                    <button class="btn-primary" onclick="openPolicyModal()">+ Add Policy</button>
+                </header>
+
+                <div class="filters">
+                    <input type="text" id="policySearch" placeholder="Search policies..." class="search-input">
+                </div>
+
+                <div class="policies-list" id="policiesList">
+                    <!-- Policies will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Tasks Page -->
+            <div id="tasksContent" class="content-section">
+                <header class="page-header">
+                    <h1>Task Management</h1>
+                    <button class="btn-primary" onclick="openTaskModal()">+ Add Task</button>
+                </header>
+
+                <div class="task-filters">
+                    <select id="taskStatusFilter" class="form-control">
+                        <option value="">All Tasks</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+
+                <div class="tasks-list" id="tasksList">
+                    <!-- Tasks will be loaded here -->
+                </div>
+            </div>
+
+            <!-- To-Do List Page -->
+            <div id="todolistContent" class="content-section">
+                <header class="page-header">
+                    <h1>To-Do List</h1>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-primary" onclick="openTodoModal()">+ Add To-Do</button>
+                        <button class="btn-secondary" onclick="openExcelImport()">📥 Import from Excel</button>
+                    </div>
+                </header>
+
+                <div class="todo-filters">
+                    <input type="text" id="todoSearch" placeholder="Search to-dos..." class="search-input">
+                    <select id="todoStatusFilter" class="form-control">
+                        <option value="">All To-Dos</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <select id="todoPriorityFilter" class="form-control">
+                        <option value="">All Priorities</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+
+                <div class="todo-stats">
+                    <div class="stat-card">
+                        <h3>Total To-Dos</h3>
+                        <p class="stat-number" id="totalTodos">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Completed</h3>
+                        <p class="stat-number" id="completedTodos">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>In Progress</h3>
+                        <p class="stat-number" id="inProgressTodos">0</p>
+                    </div>
+                </div>
+
+                <div class="todos-list" id="todosList">
+                    <!-- To-Dos will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Admin Panel -->
+            <div id="adminContent" class="content-section">
+                <header class="page-header">
+                    <h1>Admin Dashboard</h1>
+                </header>
+
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h3>Total Employees</h3>
+                        <p id="adminTotalEmp" class="admin-number">0</p>
+                    </div>
+                    <div class="admin-card">
+                        <h3>Total Tasks</h3>
+                        <p id="adminTotalTasks" class="admin-number">0</p>
+                    </div>
+                    <div class="admin-card">
+                        <h3>Total Policies</h3>
+                        <p id="adminTotalPolicies" class="admin-number">0</p>
+                    </div>
+                    <div class="admin-card">
+                        <h3>Completed Tasks</h3>
+                        <p id="adminCompletedTasks" class="admin-number">0</p>
+                    </div>
+                </div>
+
+                <div class="admin-charts">
+                    <div class="chart-container">
+                        <h3>Employee Distribution</h3>
+                        <canvas id="employeeChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Salary Distribution</h3>
+                        <canvas id="salaryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Employee Modal -->
+    <div id="employeeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEmployeeModal()">&times;</span>
+            <h2>Add/Edit Employee</h2>
+            <form id="employeeForm">
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="empName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="empEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="empPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Department:</label>
+                    <input type="text" id="empDepartment" required>
+                </div>
+                <div class="form-group">
+                    <label>Position:</label>
+                    <input type="text" id="empPosition" required>
+                </div>
+                <div class="form-group">
+                    <label>Base Salary:</label>
+                    <input type="number" id="empSalary" required>
+                </div>
+                <div class="form-group">
+                    <label>Profile Image:</label>
+                    <input type="file" id="empImage" accept="image/*">
+                </div>
+                <button type="submit" class="btn-primary">Save Employee</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Policy Modal -->
+    <div id="policyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePolicyModal()">&times;</span>
+            <h2>Add/Edit Policy</h2>
+            <form id="policyForm">
+                <div class="form-group">
+                    <label>Title:</label>
+                    <input type="text" id="policyTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="policyDescription" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Policy Type:</label>
+                    <select id="policyType">
+                        <option value="leave">Leave</option>
+                        <option value="conduct">Conduct</option>
+                        <option value="security">Security</option>
+                        <option value="health">Health</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>File (PDF/Image):</label>
+                    <input type="file" id="policyFile" accept=".pdf,.jpg,.png">
+                </div>
+                <button type="submit" class="btn-primary">Save Policy</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTaskModal()">&times;</span>
+            <h2>Add/Edit Task</h2>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label>Title:</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="taskDescription" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priority:</label>
+                    <select id="taskPriority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Due Date:</label>
+                    <input type="date" id="taskDueDate">
+                </div>
+                <button type="submit" class="btn-primary">Save Task</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- To-Do Modal -->
+    <div id="todoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTodoModal()">&times;</span>
+            <h2>Add/Edit To-Do</h2>
+            <form id="todoForm">
+                <div class="form-group">
+                    <label>Title:</label>
+                    <input type="text" id="todoTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="todoDescription" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priority:</label>
+                    <select id="todoPriority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Due Date:</label>
+                    <input type="date" id="todoDueDate">
+                </div>
+                <div class="form-group">
+                    <label>Status:</label>
+                    <select id="todoStatus">
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Save To-Do</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Excel Import Modal -->
+    <div id="excelImportModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeExcelImport()">&times;</span>
+            <h2>Import To-Dos from Excel</h2>
+            <div class="form-group">
+                <label>Select Excel File (.xlsx or .xls):</label>
+                <input type="file" id="excelFile" accept=".xlsx,.xls" required>
+            </div>
+            <p style="font-size: 12px; color: #64748b; margin: 10px 0;">
+                Excel columns required: Title, Description, Priority, DueDate, Status
+            </p>
+            <button class="btn-primary" onclick="importExcelFile()">Import To-Dos</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <script src="./dist/bundle.js"></script>
+</body>
+</html>
+</body>
+</html>
